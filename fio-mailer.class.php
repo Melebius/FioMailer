@@ -83,6 +83,30 @@ class FioMailer
     return $this->sendMail($_to, $subject, $body);
   }
 
+  /**
+   * Zaslání upozornění na jednotlivé vybrané transakce.
+   * @param string $_to e-mailová adresa příjemce
+   * @param string $_subj_start začátek předmětu e-mailu
+   * @return bool úspěšnost odeslání
+   */
+  public function sendSingleAlerts($_to, $_subj_start)
+  {
+    $result = true;
+    while($this->csv_reader->findNext())
+    {
+      $subject = $_subj_start . ' – ' .
+                 $this->csv_reader->readTransactData('VS') . ' – ' .
+                 $this->csv_reader->readTransactData('Objem');
+
+      $body = "V bance proběhla následující sledovaná transakce:\n\n";
+      $body .= $this->printTransaction().
+               "\n\nOdeslal FioMailer Akademických týdnů.\n";
+      $result = $this->sendMail($_to, $subject, $body) && $result;
+    }
+
+    return $result;
+  }
+
   // ------------------------- PRIVATE -----------------------------------
   private $csv_reader = NULL; ///< čtečka transakcí
   private $token;             ///< autentizační token banky
