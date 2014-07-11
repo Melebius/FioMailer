@@ -1,0 +1,17 @@
+accountId;2200018111
+bankId;2010
+currency;CZK
+iban;CZ3520100000002200018111
+bic;FIOBCZPPXXX
+openingBalance;12894,79
+closingBalance;12845,93
+dateStart;25.07.2012
+dateEnd;15.09.2012
+idFrom; 1252062368
+idTo; 1255107881
+idLastDownload; 1252062367
+
+ID pohybu;Datum;Objem;Měna;Protiúčet;Název protiúčtu;Kód banky;Název banky;KS;VS;SS;Uživatelská identifikace;Zpráva pro příjemce;Typ;Provedl;Upřesnění;Komentář;BIC;ID pokynu;
+1252062368;31.07.2012;0,07;CZK;;;;;;;;;;Připsaný úrok;;;;;2120891307;
+1252273009;01.08.2012;-49,00;CZK;1231231231;;2010;"Fio banka, a.s.";0558;;; ;;Platba převodem uvnitř banky;"Béďa, ""Trávníček""";; ;;2121709706;
+1255107881;31.08.2012;0,07;CZK;;;;;;;;;;Připsaný úrok;;;;;2134853563;
