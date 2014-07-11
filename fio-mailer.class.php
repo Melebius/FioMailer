@@ -28,12 +28,14 @@ class FioMailer
 
   /**
    * Načte z banky historii transakcí od posledního zavolání této funkce.
+   * @param bool $_pickOnce nastaví, zda se může záznam při čtení z CSV vybrat víckrát
    */
-  public function readHistory()
+  public function readHistory($_pickOnce)
   {
     // stažení dat z banky
     $csv = file(self::URL_BASE . $this->token . '/transactions.csv');
     $this->csv_reader = new TransactCsvReader($csv);
+    $this->csv_reader->pickItemsOnce($_pickOnce);
     return true;
   }
 

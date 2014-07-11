@@ -25,16 +25,20 @@ class TransactCsvReader
     $this->cols = explode(';', $_csv[self::CSV_HEADER_LENGTH]);
 
     // načtení transakcí do pole
+    // vytvoření pole $picked s hodnotami false
     $this->transacts = array();
+    $this->picked    = array();
     for($i = self::CSV_HEADER_LENGTH; $i < count($_csv); $i++)
     {
       $this->transacts[] = self::csv_explode($_csv[$i]);
+      $this->picked[]    = false;
     }
 
     // inicializace vlastností, které by měly později nastavit metody
     $this->index    = self::INITIAL_INDEX;
     $this->filt_col = 0;
     $this->filt_val = "";
+    $this->pick_once = false;
   }
 
   /**
@@ -68,6 +72,17 @@ class TransactCsvReader
   }
 
   /**
+   * Nastavení, zda vyzvednout položku jen jednou.
+   * Po nastavení true bude metoda findNext() přeskakovat transakce,
+   * které již byly vybrány dříve (za dobu existence objektu).
+   * @param bool $_pickOnce
+   */
+  public function pickItemsOnce($_pickOnce)
+  {
+    $this->pick_once = $_pickOnce;
+  }
+
+  /**
    * Přechod na další transakci v seznamu.
    *
    * Přesune ukazatel, používaný metodou readTransactData(),
@@ -79,9 +94,11 @@ class TransactCsvReader
   {
     for($i = $this->index+1; $i < count($this->transacts); $i++)
     {
-      if(self::startsWith($this->transacts[$i][$this->filt_col], $this->filt_val))
+      if(!($this->pick_once && $this->picked[$i]) &&
+         self::startsWith($this->transacts[$i][$this->filt_col], $this->filt_val))
       {
         $this->index = $i;
+        $this->picked[$i] = true;
         return true;
       }
     }
@@ -103,11 +120,13 @@ class TransactCsvReader
 
   // ------------------------- PRIVATE -----------------------------------
   private $transacts; ///< pole transakcí
+  private $picked;    ///< pole příznaků, zda již byly transakce vybrány
   private $cols;      ///< názvy sloupců tabulky transakcí
   private $index;     ///< index aktuální transakce (pole $transacts)
 
   private $filt_col;  ///< index sloupce použitého jako filtr
   private $filt_val;  ///< hodnota, podle níž se sloupec filtruje
+  private $pick_once; ///< předávat stejnou transakci jen jednou?
 
   const CSV_HEADER_LENGTH = 13;   ///< počet řádků před tabulkou transakcí
   const INITIAL_INDEX     =  0;   ///< hodnota indexu na začátku průchodu polem
