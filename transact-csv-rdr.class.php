@@ -8,6 +8,7 @@
  * Vyžaduje PHP 5.3.0 nebo novější.
  *
  * @author Miroslav Matějů @<melebius@gmail.com@>
+ * @copyright GNU LGPL v3.0
  */
 class TransactCsvReader
 {

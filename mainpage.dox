@@ -1,0 +1,24 @@
+/**
+@mainpage
+@em %FioMailer je knihovna pro automatické zasílání e-mailových upozornění
+na provedené transakce ve <a href="http://www.fio.cz/">FIO bance</a>.
+
+Byla vytvořena pro potřeby neziskové organizace
+<a href="http://www.akademicketydny.info/">Akademické týdny o.p.s.</a>
+a uvolněna i pro další zájemce pod licencí
+<a href="http://choosealicense.com/licenses/lgpl-3.0/">GNU LGPL v3.0</a>.
+
+@section usage Použití
+
+Rozhraní knihovny tvoří třída FioMailer.
+Její metody volejte ve svém programu podle dokumentace.
+Nezapomeňte v metodě @c sendMail()
+nastavit své přihlašovací a kontaktní údaje!
+
+@section feedback Zpětná vazba
+
+S dotazy, náměty a připomínkami se obracejte na
+<a href="mailto:melebius@gmail.com?subject=FioMailer">autora knihovny</a>
+nebo použijte oficiální
+<a href="https://github.com/Melebius/FioMailer/issues">issue tracker</a>.
+*/

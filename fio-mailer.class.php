@@ -13,6 +13,7 @@ require_once('phpmailer/language/phpmailer.lang-cz.php');
  * Používá knihovnu PHPMailer: https://github.com/PHPMailer/PHPMailer
  *
  * @author Miroslav Matějů @<melebius@gmail.com@>
+ * @copyright GNU LGPL v3.0
  */
 class FioMailer
 {
