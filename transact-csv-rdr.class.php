@@ -42,7 +42,7 @@ class TransactCsvReader
     // vytvoření pole $picked s hodnotami false
     $this->transacts = array();
     $this->picked    = array();
-    for($i = $tab_header_idx; $i < count($_csv); $i++)
+    for($i = $tab_header_idx+1; $i < count($_csv); $i++)
     {
       $this->transacts[] = self::csv_explode($_csv[$i]);
       $this->picked[]    = false;
@@ -142,7 +142,8 @@ class TransactCsvReader
   private $filt_val;  ///< hodnota, podle níž se sloupec filtruje
   private $pick_once; ///< předávat stejnou transakci jen jednou?
 
-  const INITIAL_INDEX     =  0;   ///< hodnota indexu na začátku průchodu polem
+  const INITIAL_INDEX = -1; ///< index před nalezením 1. odpovídající transakce
+                            ///< (první platný index zmenšený o 1)
 
   /**
    * Začíná řetězec $haystack řetězcem $needle?
