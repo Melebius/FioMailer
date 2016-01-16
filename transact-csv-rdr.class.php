@@ -20,16 +20,29 @@ class TransactCsvReader
    */
   public function __construct(array $_csv)
   {
+    // zjištění délky hlavičky
+    // Dokumentace API sice počítá s prázdným řádkem
+    // před tabulkou transakcí, ale ve skutečnosti chybí.
+    // Hlavičku tabulky tedy radši najdeme sami.
+    for($i = 0; $i < count($_csv); $i++)
+    {
+      if(self::startsWith($_csv[$i], 'ID pohybu'))
+      {
+        $tab_header_idx = $i;
+        break;
+      }
+    }
+
     // uložení posledního řádku hlavičky do názvů sloupců
     // V hlavičce tabulky by se neměly vyskytovat uvozovky,
     // takže si vystačíme s explode().
-    $this->cols = explode(';', $_csv[self::CSV_HEADER_LENGTH]);
+    $this->cols = explode(';', $_csv[$tab_header_idx]);
 
     // načtení transakcí do pole
     // vytvoření pole $picked s hodnotami false
     $this->transacts = array();
     $this->picked    = array();
-    for($i = self::CSV_HEADER_LENGTH; $i < count($_csv); $i++)
+    for($i = $tab_header_idx; $i < count($_csv); $i++)
     {
       $this->transacts[] = self::csv_explode($_csv[$i]);
       $this->picked[]    = false;
@@ -129,7 +142,6 @@ class TransactCsvReader
   private $filt_val;  ///< hodnota, podle níž se sloupec filtruje
   private $pick_once; ///< předávat stejnou transakci jen jednou?
 
-  const CSV_HEADER_LENGTH = 13;   ///< počet řádků před tabulkou transakcí
   const INITIAL_INDEX     =  0;   ///< hodnota indexu na začátku průchodu polem
 
   /**
