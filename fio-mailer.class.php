@@ -60,6 +60,24 @@ class FioMailer
   }
 
   /**
+   * Nastavení filtru směru transakcí.
+   * Viz informace u třídy TransactCsvReader.
+   * @param TransactDirection $_direction požadovaný směr transakcí
+   * @return bool úspěšnost nastavení filtru
+   */
+  public function setDirectionFilter($_direction)
+  {
+    if(!is_null($this->csv_reader))
+    {
+      return $this->csv_reader->setDirectionFilter($_direction);
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  /**
    * Zaslání upozornění na všechny vybrané transakce v jedné zprávě.
    * @param string $_to e-mailová adresa příjemce
    * @param string $_subj_start začátek předmětu e-mailu

@@ -53,6 +53,7 @@ class TransactCsvReader
     $this->filt_col = 0;
     $this->filt_val = "";
     $this->pick_once = false;
+    $this->direction_filter = TransactDirection::All;
   }
 
   /**
@@ -68,7 +69,8 @@ class TransactCsvReader
    * @note Pokud je zadán prázdný řetězec jako $value,
    * budou zahrnuty všechny transakce, které mají příslušné pole NEPRÁZDNÉ!
    *
-   * @note Nelze použít víc filtrů současně!
+   * @note Nelze použít víc filtrů na hodnotu současně,
+   * ale je možné současně použít filtr směru.
    *
    * @return bool Vrátí false, pokud se nepodařilo filtr nastavit.
    *              Například pokud klíč neexistuje.
@@ -83,6 +85,22 @@ class TransactCsvReader
 
     // zkontrolujeme, zda byl klíč nalezen (=== pro rozlišení 0/FALSE)
     return ($this->filt_col !== false);
+  }
+
+  /**
+   * Nastavení filtru směru transakcí.
+   *
+   * Při následném volání metody findNext() budou zahrnuty jen transakce
+   * zadaného směru.
+   *
+   * @note Lze kombinovat s metodou setFilter(). Po nastavení obou typů filtru
+   * budou zahrnuty transakce, které splní podmínky obou filtrů současně.
+   *
+   * @param TransactDirection $_direction volba směru transakce
+   */
+  public function setDirectionFilter($_direction)
+  {
+    $this->direction_filter = $_direction;
   }
 
   /**
@@ -109,7 +127,9 @@ class TransactCsvReader
     for($i = $this->index+1; $i < count($this->transacts); $i++)
     {
       if(!($this->pick_once && $this->picked[$i]) &&
-         self::startsWith($this->transacts[$i][$this->filt_col], $this->filt_val))
+         self::startsWith($this->transacts[$i][$this->filt_col], $this->filt_val) &&
+         ($this->direction_filter == TransactDirection::All ||
+          $this->getDirection($i) == $this->direction_filter))
       {
         $this->index = $i;
         $this->picked[$i] = true;
@@ -129,7 +149,7 @@ class TransactCsvReader
    */
   public function readTransactData($_key)
   {
-    return $this->transacts[$this->index][array_search($_key, $this->cols)];
+    return $this->readAnyTransactData($this->index, $_key);
   }
 
   // ------------------------- PRIVATE -----------------------------------
@@ -141,9 +161,41 @@ class TransactCsvReader
   private $filt_col;  ///< index sloupce použitého jako filtr
   private $filt_val;  ///< hodnota, podle níž se sloupec filtruje
   private $pick_once; ///< předávat stejnou transakci jen jednou?
+  private $direction_filter;  ///< filtr směru transakce
 
   const INITIAL_INDEX = -1; ///< index před nalezením 1. odpovídající transakce
                             ///< (první platný index zmenšený o 1)
+
+  /**
+   * Čtení údaje o zvolené transakci.
+   *
+   * Načte zvolený údaj transakce určené indexem.
+   *
+   * @param int $_index  index zvolené transakce
+   * @param string $_key sloupec tabulky, který se má načíst
+   */
+  private function readAnyTransactData($_index, $_key)
+  {
+    return $this->transacts[$_index][array_search($_key, $this->cols)];
+  }
+
+  /**
+   * Načtení směru zvolené transakce.
+   *
+   * @return TransactDirection směr transakce
+   * @param int $_index index záznamu v poli transakcí
+   */
+  private function getDirection($_index)
+  {
+    if($this->readAnyTransactData($_index, "Objem") > 0)
+    {
+      return TransactDirection::Incoming;
+    }
+    else
+    {
+      return TransactDirection::Outgoing;
+    }
+  }
 
   /**
    * Začíná řetězec $haystack řetězcem $needle?
@@ -190,5 +242,15 @@ class TransactCsvReader
   {
     return str_getcsv($row, ';', '"', '"');
   }
+}
+
+/**
+ * Možné volby směru transakce pro TransactCsvReader::setDirectionFilter().
+ */
+abstract class TransactDirection
+{
+  const All = 1;
+  const Incoming = 2;
+  const Outgoing = 3;
 }
 ?>

@@ -64,13 +64,20 @@ echo "<h3>Objem = 0,0*</h3>\n";
 $transacts->setFilter('Objem', '0,0');
 vypisTransakce();
 
-echo "<h3>Protiúčet = ''</h3>\n";
-$transacts->setFilter('Protiúčet', '');
+$transacts->setFilter('Objem', '');
+
+echo "<h3>Příchozí</h3>\n";
+$transacts->setDirectionFilter(TransactDirection::Incoming);
+vypisTransakce();
+
+echo "<h3>Odchozí</h3>\n";
+$transacts->setDirectionFilter(TransactDirection::Outgoing);
 vypisTransakce();
 
 echo "<h3>Všechny</h3>\n";
 $transacts->pickItemsOnce(false);
 $transacts->setFilter('Objem', '');
+$transacts->setDirectionFilter(TransactDirection::All);
 vypisTransakce();
 
 echo "<h2>Konec</h2>\n";
