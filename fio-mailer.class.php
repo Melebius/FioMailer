@@ -131,7 +131,7 @@ class FioMailer
   private $token;             ///< autentizační token banky
 
   /// stálá část URL pro komunikaci s bankou
-  const URL_BASE = 'https://www.fio.cz/ib_api/rest/last/';
+  const URL_BASE = 'https://fioapi.fio.cz/v1/rest/last/';
 
   /**
    * Vypíše údaje o právě vybrané transakci.
