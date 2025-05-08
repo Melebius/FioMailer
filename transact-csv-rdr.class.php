@@ -253,4 +253,3 @@ abstract class TransactDirection
   const Incoming = 2;
   const Outgoing = 3;
 }
-?>

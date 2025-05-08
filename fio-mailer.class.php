@@ -213,4 +213,3 @@ class FioMailer
     return $result;
   }
 }
-?>
